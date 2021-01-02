@@ -9,16 +9,16 @@ RUN apt-get update && apt-get upgrade -y \
 	&& apt-key add mysql.gpgkey \
 	&& cp mysql.list /etc/apt/sources.list.d/ \
 	&& apt-get update \
-	#&& export DEBIAN_FRONTEND=noninteractive \
-	#&& debconf-set-selections <<< "mysql-server mysql-server/root_password password 123456" \
-	#&& debconf-set-selections <<< "mysql-server mysql-server/root_password_again password 123456" \
-	&& echo 'mysql-community-server mysql-community-server/root-pass 123456' | debconf-set-selections \
-	&& echo 'mysql-community-server mysql-community-server/re-root-pass 123456' | debconf-set-selections \
-	#&& echo 'mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)' | debconf-set-selections \
-	#&& export DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
+	&& echo 'mysql-community-server mysql-community-server/root-pass password root' | debconf-set-selections \
+	&& echo 'mysql-community-server mysql-community-server/re-root-pass password root' | debconf-set-selections \
+	&& echo 'mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)' | debconf-set-selections \
 	&& apt-get install -y mysql-server
 
+RUN echo "RUN #2"
+
 EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]
 
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
