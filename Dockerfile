@@ -5,20 +5,17 @@ WORKDIR /usr/src/ft_server
 COPY ./srcs .
 
 RUN apt-get update && apt-get upgrade -y \
-	&& apt-get install -y nginx gnupg debconf-utils \
-	&& apt-key add mysql.gpgkey \
-	&& cp mysql.list /etc/apt/sources.list.d/ \
-	&& apt-get update \
-	&& echo 'mysql-community-server mysql-community-server/root-pass password root' | debconf-set-selections \
-	&& echo 'mysql-community-server mysql-community-server/re-root-pass password root' | debconf-set-selections \
-	&& echo 'mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)' | debconf-set-selections \
-	&& apt-get install -y mysql-server
+	&& apt-get install -y nginx openssl mariadb-server mariadb-client \
+	&& service mysql start \
+	&& mkdir /etc/nginx/certificate \
+	&& openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -out /etc/nginx/certificate/nginx-certificate.crt -keyout /etc/nginx/certificate/nginx.key \
+	#&& apt-get update
 
-RUN echo "RUN #2"
+RUN apt-get install -y wget zsh git && sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
 EXPOSE 80 443
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD service mysql restart && nginx -g 'daemon off;'
 
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
@@ -33,6 +30,15 @@ CMD ["nginx", "-g", "daemon off;"]
 	#&& rm -rf /var/lib/apt/lists/* \
 #
 #
+#
+# mkdir /etc/nginx/certificate
+# cd /etc/nginx/certificate
+#openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/nginx/certificate/nginx-certificate.crt -keyout /etc/nginx/certificate/nginx.key
+#	-subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
+#
+#
+#
+#cd 
 # https://downloads.mysql.com/docs/mysql-apt-repo-quick-guide-en.pdf
 # https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install
 # https://github.com/chasfricke/my-portfolio/blob/master/Dockerfile
