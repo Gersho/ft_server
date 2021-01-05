@@ -4,20 +4,22 @@ WORKDIR /usr/src/ft_server
 
 COPY ./srcs .
 
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update && apt-get upgrade expect -y \
 	&& apt-get install -y nginx openssl mariadb-server mariadb-client \
 	&& service mysql start \
 	&& mkdir /etc/nginx/certificate \
-	&& openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -out /etc/nginx/certificate/nginx-certificate.crt -keyout /etc/nginx/certificate/nginx.key \
-	#&& apt-get update
+	&& openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -out /etc/nginx/certificate/nginx-certificate.crt -keyout /etc/nginx/certificate/nginx.key
 
-RUN apt-get install -y wget zsh git && sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+RUN apt-get install -y wget zsh git vim && sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
+RUN cp default /etc/nginx/sites-available && nginx -t && service nginx reload\
+	&& apt-get install -y php-fpm php-mysql
 
 EXPOSE 80 443
 
 CMD service mysql restart && nginx -g 'daemon off;'
 
-#sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
+#debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
 #sudo apt-get -y install mysql-server
 #
