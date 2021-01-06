@@ -1,6 +1,6 @@
 FROM debian:buster
 
-WORKDIR /usr/src/ft_server
+WORKDIR /usr/src/docker_webserv
 
 COPY ./srcs .
 
@@ -12,35 +12,26 @@ RUN apt-get update && apt-get upgrade expect -y \
 
 RUN apt-get install -y wget zsh git vim && sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 
-RUN cp default /etc/nginx/sites-available && nginx -t && service nginx reload\
+RUN cp default /etc/nginx/sites-available && service nginx reload\
 	&& apt-get install -y php-fpm php-mysql
+
+RUN service mysql restart && sh mysql_install_nopw.sh && cp test.php /var/www/html && nginx -t
+
+RUN apt-get install -y unzip php-mbstring php-zip php-gd php-xml php-pear php-gettext php-cgi \
+	&& wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip \
+	&& service mysql restart && mysql -u root < basics.sql
+
+RUN mkdir /var/www/html/phpmyadmin && unzip phpMyAdmin* -d /var/www/html/phpmyadmin
 
 EXPOSE 80 443
 
-CMD service mysql restart && nginx -g 'daemon off;'
+CMD service mysql restart && service php7.3-fpm start && nginx -g 'daemon off;'
 
-#debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
-#sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-#sudo apt-get -y install mysql-server
+# TODO:
+# remove junk files
+# remettre password sql
+# changer arborescance phpmyadmin
 #
-#	#&& debconf-set-selections <<< 'mysql-server mysql-server/root_password password 123456' \
-	#&& debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password 123456' \
-	#&& apt-get install -y gnupg wget lsb-release \
-	#&& wget https://dev.mysql.com/get/mysql-apt-config_0.8.16-1_all.deb 
-	#&& export DEBIAN_FRONTEND=noninteractive \
-	#&& dpkg -i mysql-apt-config_0.8.16-1_all.deb \
-	#&& rm -rf /var/lib/apt/lists/* \
-#
-#
-#
-# mkdir /etc/nginx/certificate
-# cd /etc/nginx/certificate
-#openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/nginx/certificate/nginx-certificate.crt -keyout /etc/nginx/certificate/nginx.key
-#	-subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
-#
-#
-#
-#cd 
 # https://downloads.mysql.com/docs/mysql-apt-repo-quick-guide-en.pdf
 # https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install
 # https://github.com/chasfricke/my-portfolio/blob/master/Dockerfile
