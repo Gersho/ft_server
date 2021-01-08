@@ -17,11 +17,19 @@ RUN cp default /etc/nginx/sites-available && service nginx reload\
 
 RUN service mysql restart && sh mysql_install_nopw.sh && cp test.php /var/www/html && nginx -t
 
-RUN apt-get install -y unzip php-mbstring php-zip php-gd php-xml php-pear php-gettext php-cgi \
-	&& wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip \
-	&& service mysql restart && mysql -u root < basics.sql
+RUN apt-get install -y php-mbstring php-zip php-gd php-xml php-pear php-gettext php-cgi \
+	&& wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.tar.gz \
+	&& service mysql restart && mysql -u root < basics.sql \
+	&& echo "basics.sql is done"
 
-RUN mkdir /var/www/html/phpmyadmin && unzip phpMyAdmin* -d /var/www/html/phpmyadmin
+#RUN mkdir /var/www/html && unzip phpMyAdmin-5.0.4-all-languages.tar.gz -d /var/www/html
+
+RUN tar xzf phpMyAdmin-5.0.4-all-languages.tar.gz -C /var/www/html \
+	&& mv /var/www/html/phpMyAdmin-5.0.4-all-languages /var/www/html/phpmyadmin \
+	&& chown -R www-data:www-data /var/www/html/phpmyadmin \
+	&& cp config.inc.php /var/www/html/phpmyadmin/config.inc.php 
+#	&& chmod 660 /var/www/html/phpmyadmin/config.inc.php
+
 
 EXPOSE 80 443
 

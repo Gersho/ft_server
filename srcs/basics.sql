@@ -1,1 +1,2 @@
-GRANT ALL ON *.* TO 'phproot'@'localhost' IDENTIFIED BY 'root';
+GRANT ALL ON *.* TO 'sqlroot'@'localhost' IDENTIFIED BY 'root';
+CREATE DATABASE 'phpmyadmin';
