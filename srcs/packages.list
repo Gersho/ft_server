@@ -1,0 +1,15 @@
+expect
+nginx
+openssl
+wget
+mariadb-server
+mariadb-client
+php-fpm
+php-mysql
+php-mbstring
+php-zip
+php-gd
+php-xml
+php-pear
+php-gettext
+php-cgi
