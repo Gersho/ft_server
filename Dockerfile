@@ -12,7 +12,7 @@ RUN apt-get update && apt-get upgrade -y \
 	&& mkdir /etc/nginx/certificate \
 	&& openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -out /etc/nginx/certificate/nginx-certificate.crt -keyout /etc/nginx/certificate/nginx.key \
 	&& cp default /etc/nginx/sites-available && nginx -t && service nginx reload\
-	&& service mysql restart && sh mysql_install_nopw.sh && cp test.php /var/www/html && nginx -t\
+	&& service mysql restart && sh mysql_install_nopw.sh\
 	&& service mysql restart && mysql -u root < basics.sql \
 	&& tar xzf phpMyAdmin-5.0.4-all-languages.tar.gz -C /var/www/html \
 	&& tar xzf wordpress-5.6.tar.gz -C /var/www/html\
@@ -27,9 +27,10 @@ RUN apt-get install -y wget zsh git vim && sh -c "$(wget https://raw.github.com/
 
 EXPOSE 80 443
 
-CMD service mysql restart && service php7.3-fpm start && nginx -g 'daemon off;'
+CMD service mysql restart && service php7.3-fpm start && sh run.sh && nginx -g 'daemon off;'
 
 # TODO:
 # remove junk files from srcs
 # purge container from crap
 # remettre password sql
+# docker run -e ENV
