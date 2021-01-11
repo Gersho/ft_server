@@ -3,12 +3,13 @@ service mysql restart
 service php7.3-fpm start
 if [ "$AUTO_INDEX" = "off" ]
 then
-        echo "Copying autoindex off"
         cp default.indexoff /etc/nginx/sites-available/
-        rm -f /etc/nginx/sites-available/default
         mv /etc/nginx/sites-available/default.indexoff /etc/nginx/sites-available/default
-        echo "done"
+else
+        cp default.indexon /etc/nginx/sites-available/
+        mv /etc/nginx/sites-available/default.indexon /etc/nginx/sites-available/default
 fi
-echo "blablatest"
+rm -rf default.indexon
+rm -rf default.indexoff
 nginx -t && service nginx reload
 nginx -g 'daemon off;'

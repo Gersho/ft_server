@@ -1,0 +1,8 @@
+basics.sql
+config.inc.php
+wp-config.php
+packages.list
+wordpress-5.6.tar.gz
+phpMyAdmin-5.0.4-all-languages.tar.gz
+mysql_install_nopw.sh
+purge.list
