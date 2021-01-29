@@ -23,12 +23,8 @@ RUN apt-get update && apt-get upgrade -y \
 	&& chown -R www-data:www-data /var/www/html/wordpress\
 	&& rm -rf $(cat purge.list)
 
-RUN apt-get install -y wget zsh git vim && sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
-
 EXPOSE 80 443
 
-CMD sh run.sh
+RUN echo "\e[0;32m\nInstalation summary: \nCredentials (you should change them): \n'sqlroot'@'localhost' // 'root' \n'wordpress_user'@'localhost' // 'password' \n'root'@'localhost' // <no password> \nOptions(lowercase only): \nauto_index=off (default on) enable or disable the auto_index \nred_https=off  (default on) enable or disable auto https redirect \e[0m"
 
-#TODO: install summary, login/pass
-#install default mysql server
-#remove mariadbclient
+CMD sh run.sh
