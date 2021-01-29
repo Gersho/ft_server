@@ -23,8 +23,12 @@ RUN apt-get update && apt-get upgrade -y \
 	&& chown -R www-data:www-data /var/www/html/wordpress\
 	&& rm -rf $(cat purge.list)
 
+RUN apt-get install -y wget zsh git vim && sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
 EXPOSE 80 443
 
 CMD sh run.sh
 
 #TODO: install summary, login/pass
+#install default mysql server
+#remove mariadbclient

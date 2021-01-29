@@ -2,8 +2,7 @@ expect
 nginx
 openssl
 wget
-mariadb-server
-mariadb-client
+default-mysql-server
 php-fpm
 php-mysql
 php-mbstring
