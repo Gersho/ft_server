@@ -25,6 +25,12 @@ RUN apt-get update && apt-get upgrade -y \
 
 EXPOSE 80 443
 
-RUN echo "\e[0;32m\nInstalation summary: \nCredentials (you should change them): \n'sqlroot'@'localhost' // 'root' \n'wordpress_user'@'localhost' // 'password' \n'root'@'localhost' // <no password> \nOptions(lowercase only): \nauto_index=off (default on) enable or disable the auto_index \nred_https=off  (default on) enable or disable auto https redirect \e[0m"
+RUN echo "\e[0;32m\nInstalation summary: \n\
+	Credentials (you should change them):\n\
+		'sqlroot'@'localhost' // 'root' \n\
+		'wordpress_user'@'localhost' // 'password' \n\
+ 		'root'@'localhost' // <no password> \nOptions(lowercase only): \n\
+ 	auto_index=off (default on) enable or disable the auto_index \n\
+ 	red_https=off  (default on) enable or disable auto https redirect \e[0m"
 
 CMD sh run.sh
